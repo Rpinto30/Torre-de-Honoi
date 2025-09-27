@@ -1,31 +1,31 @@
-def torre_hanoi(n, i=0, j=1, k=3, w=['A','B','C']):
-    text = ''
-    if i < (2**n) - 1:
-        if j % 2 != 0:
-            text += f"Mover 1 a {w[(i % 2) + 1]}"
-            if j == 4:
-                torre_hanoi(n, i+1, j+1, k+1, w)
-            else:
-                torre_hanoi(n, i+1, j+1, k, w)
-        elif j % 2 == 0:
-            if j != 4:
-                text += f"Mover 2 a {w[(i % 3)]}"
-                torre_hanoi(n, i+1, j+1, k, w)
-            else:
-                if i != (2**n - 1)//2:
-                    text += f"Mover {k} a {w[(i//k) % 3]}"
-                    if k == n-1:
-                        torre_hanoi(n, i+1, 1, 3, w)
-                    else:
-                        torre_hanoi(n, i+1, 1, k+1, w)
-                else:
-                    text = f"Mover {n} a C"
-                    torre_hanoi(n, i+1, 1, 3, w)
-        print(f"{i+1}) "+text  )
-    else:
-        print("Torre resuelta")
+def torre_hanoi(n, i=0, w=None, pos=None):
+    total = 2**n - 1
+    if w is None:
+        if n % 2: w = ['A', 'C', 'B']  #Impar
+        else: w = ['A', 'B', 'C'] #par
+        pos = [0]*n #linea de 4 números
 
-print("LEER DE ABAJO PARA ARRIBA")
+    if i == total//2: #Luego de la mitad
+        if n % 2: w = ['B', 'C', 'A']  
+        else: w =  ['B', 'A', 'C'] 
+        
+    if i >= total:
+        print("Torre resuelta") #ya ta
+        return
+
+    m = i + 1 #
+    d = 1 #para el 1,2,1
+    while m % 2 == 0:
+        m //= 2
+        d += 1
+    disk = d
+
+    disc_pos = pos[disk-1]
+    if disk % 2 == 1: letra = (disc_pos + 1) % 3 #impares más 1 
+    else: letra = (disc_pos + 2) % 3 #pares más 2
+    print(f"{i+1}) Mover {disk} a {w[letra]}\t\n{m}, {d}, {pos}")
+    pos[disk-1] = letra #actualizar las posiciones para la otra iteración
+    torre_hanoi(n, i+1, w, pos)
 
 # Prueba
 while True:
@@ -39,7 +39,7 @@ while True:
                 n = input("Cuantos discos deseas? ")
                 print("------------------------")
                 torre_hanoi(int(n))
-            except: print("Tiene que ser un número!!")
+            except ValueError: print("Tiene que ser un número!!")
 
         case '2':
             break
